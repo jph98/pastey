@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>private pastebins</title>
+<META NAME="keywords" CONTENT="pastebin, pbin, paste bin">
+<META NAME="description" CONTENT="pastey paste bin">
+
+<script src='Ractive.js'></script>
+<script src='jquery-2.1.0.js'></script>
+
+<link href="pastey.css" rel="stylesheet" type="text/css" />
+
+<script>
+        <!-- TODO: Replace this with standard Ractive events -->
+        $(document).ready(function() {
+            
+            // Request the most recent listings
+            request = $.ajax({
+                url: "/pastey/index.php/listings",
+                type: "get"
+            });
+
+            request.done(function(msg)
+            {
+                 console.log("Done " + msg);
+            });
+
+            request.fail(function(jqXHR, textStatus)
+            {
+                 console.log("Fail");
+            });
+
+        });
+</script>
+
+
+</head>
+
+<!-- header -->
+<div id="wrapper">
+<div id="header">
+<a href="/"><img src="pastebin_logo.gif" border="0" alt="Pastey" title="Pastey"></a>
+</div>
+<!-- header -->
+
+<body>
+
+    <div id="container">       
+
+     <script id='tmpl' type='text/ractive'>
+
+                <div id="content">
+                        
+                        <p>
+                        Welcome to Pastey.  Pastey is a paste bin that allows you to upload source code and share it with other people.
+                        <br><br>
+                        To use Pastey:</p>
+                        <ol>
+                        <li>Enter a title, choose the source code type (syntax) and enter your name.</li>
+                        <li>Click on Add, this will create your pastebin.</li>
+                        <li>To share the pastebin with other people send them the link in the address bar.</li></ol>
+
+                        <p>You can also choose to make your pastebin private when creating it.
+                        </p>
+                    
+                        <form method="post" enctype="multipart/form-data" action="listings/add">
+
+                                <table cellpadding="0" cellspacing="0">
+                                <tr><td class="label">Title <span class="mandatory">*</span></td>
+                                <td class="fieldcontainer">                                        
+                                        <input type="text" name="title"/>
+                                        <div class="errormessage">
+                                                //Please enter a title for your pastebin
+                                        </div>
+                                </td></tr>
+                                <tr><td class="label">Language <span class="mandatory">*</span></td>
+                                <td class="fieldcontainer" style="white-space:nowrap; padding-bottom:10px;">
+
+                                        <select name="language">
+                                        // $languageslist, $this->data['Listing']['language']
+                                        </select>
+
+                                        <div class="errormessage">
+                                                // Please select the source code language
+                                        </div></td>
+                                </tr>
+
+                                <tr>
+                                <td class="label">Your Name <span class="mandatory">*</span></td>
+                                <td class="fieldcontainer">
+                                        <input type="text" name="name"/>
+                                        <div class="errormessage">
+                                                //Please enter your name
+                                        </div>
+                                        </td>
+                                </tr>
+
+                                <td class="label">Source Code <span class="mandatory">*</span></td>
+                                <td class="fieldcontainer">
+                                        <input type="textarea" name="sourcecode"/>
+                                        <div class="errormessage">
+                                                // Enter the source code
+                                        </div>
+                                </td>
+                                </tr>
+
+                        </table>
+
+                        <p>
+                            <input type="submit" name="add" class="submitButtons"/>
+                        </p>
+                        </form>
+                </div>
+
+        </div>
+
+    	<!-- footer -->
+    	<div style="clearboth"></div>
+
+    </script>
+    </div>
+
+    <!-- Move this into a separate script -->
+     <script>
+        var ractive = new Ractive({
+            el: 'container',
+            template: '#tmpl'
+        });
+    </script>
+</body>
+
+</html>
+

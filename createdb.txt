@@ -1,0 +1,4 @@
+CREATE DATABASE pastey;
+CREATE USER 'pastey'@'localhost' IDENTIFIED BY '!pastey01';
+GRANT ALL PRIVILEGES ON pastey.* TO pastey@localhost IDENTIFIED BY '!pastey01' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
