@@ -2,12 +2,10 @@
     "name": "pastey",
     "require": {
 
-    	// http://www.slimframework.com/
         "slim/slim": "*",
         "slim/extras": "*",
         "twig/twig": "*",
 
-        // https://github.com/gabordemooij/redbean
         "gabordemooij/redbean": "dev-master"
     }
 }

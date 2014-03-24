@@ -30,14 +30,6 @@ $app->setName('Pastey');
 
         $app->response()->header('Content-Type', 'text/html');
         $app->render('listings.html');
-
-        //$app->redirect('home/'.$_SESSION['group_id']);
-
-        //  $_SESSION['user'] = $email;
-        // if (isset($_SESSION['urlRedirect'])) {
-
-        // $app->flash('errors', $errors);
-
     });
 
     // View the listings
@@ -47,8 +39,9 @@ $app->setName('Pastey');
             $listings = RB::find('listings'); 
             echo json_encode(RB::exportAll($listings));
         } catch(\Exception $e) {
-            $app->flash('error', $e->getMessage());
-            $app->redirect('/error');
+            
+            $app->response->headers->set('Content-Type', 'application/json');
+            echo json_encode(array('error' => $e->getMessage()));
         }
     });
 

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a568da3dddb73ae2af37a3ac56d0b197",
+    "hash": "8ca01efb57b1a6163f62eb4d6167f17b",
     "packages": [
         {
             "name": "gabordemooij/redbean",

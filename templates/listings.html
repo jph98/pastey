@@ -14,23 +14,9 @@
         <!-- TODO: Replace this with standard Ractive events -->
         $(document).ready(function() {
             
-            // Request the most recent listings
-            request = $.ajax({
-                url: "/pastey/index.php/listings",
-                type: "get"
-            });
-
-            request.done(function(msg)
-            {
-                 console.log("Done " + msg);
-            });
-
-            request.fail(function(jqXHR, textStatus)
-            {
-                 console.log("Fail");
-            });
-
+            console.log("ready");
         });
+
 </script>
 
 
@@ -45,10 +31,14 @@
 
 <body>
 
+    <div id="error"></div>
+
     <div id="container">       
 
      <script id='tmpl' type='text/ractive'>
 
+                Greeting: {{greeting}}
+                Listings: {{listings}}
                 <div id="content">
                         
                         <p>
@@ -122,10 +112,37 @@
 
     <!-- Move this into a separate script -->
      <script>
+
         var ractive = new Ractive({
             el: 'container',
-            template: '#tmpl'
+            template: '#tmpl',
+            data: {greeting: 'Hello'}
         });
+
+        request = $.ajax({
+            url: "/pastey/index.php/listings",
+            type: "get"
+        });
+
+        request.done(function(msg) {
+             console.log("Done");
+             if (msg.hasOwnProperty('error')) {
+                console.log(msg.error);                    
+                $("#error").html("Error: " + msg.error);
+             } else {
+                console.log("Success: listings");
+                
+                // Set the msg object on the ractive.data object
+             }
+
+        });
+
+        request.fail(function(jqXHR, textStatus) {
+             console.log("Fail ");
+             console.log(JSON.stringify(jqXHR));
+             console.log(textStatus);
+        });
+
     </script>
 </body>
 

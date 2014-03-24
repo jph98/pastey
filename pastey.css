@@ -13,10 +13,17 @@ p, li, .label {
 	
 }
 
-.labellist {
+#error {
+	font-family: Tahoma, "Trebuchet MS", helvetica, arial, sans serif;
+	font-size:12px;
+	color:red;
+	padding-bottom:5px;
+	font-weight:bold;
+}
 
-		font-family: Tahoma, "Trebuchet MS", helvetica, arial, sans serif;
-		font-size:12px;
+.labellist {
+	font-family: Tahoma, "Trebuchet MS", helvetica, arial, sans serif;
+	font-size:12px;
 	color:#f56a0f;
 	padding-bottom:5px;
 	font-weight:bold;
@@ -24,31 +31,26 @@ p, li, .label {
 }
 
 li, .mandatory {
-
 	color:#e84816;
 	padding-bottom:5px;
 }
 
 
 a {
-
 	color:#f56a0f;
 	text-decoration:underline;
-	
-	
 }
 
 
 a:hover {
-
 	text-decoration:none;
 	color:#e84816;
 }	
 
-  a:focus, a:active {
+a:focus, a:active {
    outline: none;
 
-      }
+}
       
 
 #wrapper {
