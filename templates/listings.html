@@ -38,7 +38,20 @@
      <script id='tmpl' type='text/ractive'>
 
                 Greeting: {{greeting}}
-                Listings: {{listings}}
+                Listings: 
+                <table>
+                {{#listings}}
+                    <tr>                
+                        <td>{{title}}</td>
+                        <td>{{id}}</td>
+                        <td>{{name}}</td>
+                        <!-- <td>{{sourcecode}}</td> -->
+                        <td>{{language}}</td>
+                        <td>{{pastebinkey}}</td>
+                    </tr>
+                {{/listings}}
+                </table>
+
                 <div id="content">
                         
                         <p>
@@ -132,7 +145,10 @@
              } else {
                 console.log("Success: listings");
                 
+                console.log(eval(msg));
+
                 // Set the msg object on the ractive.data object
+                ractive.set("listings", eval(msg))
              }
 
         });
