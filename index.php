@@ -23,16 +23,14 @@ $app = new \Slim\Slim(array(
     'templates.path' => 'templates'
 ));
 
-$app->setName('Pastey');
 
-    // Index
+    // Add a new paste bin
     $app->get('/', function() use ($app) {    
 
         $app->response()->header('Content-Type', 'text/html');
-        $app->render('listings.html');
+        $app->render('addpaste.html');
     });
 
-    // View the listings
     $app->get('/listings', function() use ($app) {   
 
         try {
@@ -43,6 +41,28 @@ $app->setName('Pastey');
             $app->response->headers->set('Content-Type', 'application/json');
             echo json_encode(array('error' => $e->getMessage()));
         }
+
+    });
+
+    // Get a list of languages to display in the dropdown
+    $app->get('/languages', function() use ($app) {   
+
+        try {
+            $languages = RB::find('languages'); 
+            echo json_encode(RB::exportAll($languages));
+        } catch(\Exception $e) {
+            
+            $app->response->headers->set('Content-Type', 'application/json');
+            echo json_encode(array('error' => $e->getMessage()));
+        }
+
+    });
+
+    $app->get('/admin', function() use ($app) {   
+
+        echo "admin page";
+        $app->response()->header('Content-Type', 'text/html');
+        $app->render('admin.html');        
     });
 
     // Find a specific listing
@@ -51,8 +71,8 @@ $app->setName('Pastey');
     });
 
     // Submit listing
-    $app->post('/listings/:pasteid', function() use ($app) {   
-        echo "Add listing";
+    $app->post('/addpaste/:pasteid', function() use ($app) {   
+        echo "Add new paste ";
     });
 
     function viewPaste($pasteid) {

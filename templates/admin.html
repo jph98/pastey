@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>private pastebins</title>
+<META NAME="keywords" CONTENT="pastebin, pbin, paste bin">
+<META NAME="description" CONTENT="pastey paste bin">
+
+<script src='Ractive.js'></script>
+<script src='jquery-2.1.0.js'></script>
+
+<link href="pastey.css" rel="stylesheet" type="text/css" />
+
+<script>
+        <!-- TODO: Replace this with standard Ractive events -->
+        $(document).ready(function() {
+            
+            console.log("ready");
+        });
+
+</script>
+
+
+</head>
+
+<!-- header -->
+<div id="wrapper">
+<div id="header">
+<a href="/"><img src="pastebin_logo.gif" border="0" alt="Pastey" title="Pastey"></a>
+</div>
+<!-- header -->
+
+<body>
+
+    <div id="error"></div>
+
+    <div id="container">       
+
+     <script id='tmpl' type='text/ractive'>
+
+                Listings: 
+                <table>
+                {{#listings}}
+                    <tr>                
+                        <td>{{title}}</td>
+                        <td>{{id}}</td>
+                        <td>{{name}}</td>
+                        <!-- <td>{{sourcecode}}</td> -->
+                        <td>{{language}}</td>
+                        <td>{{pastebinkey}}</td>
+                    </tr>
+                {{/listings}}
+                </table>
+
+        </div>
+
+    	<!-- footer -->
+    	<div style="clearboth"></div>
+
+    </script>
+    </div>
+
+    <!-- Move this into a separate script -->
+     <script>
+
+        var ractive = new Ractive({
+            el: 'container',
+            template: '#tmpl'
+        });
+
+        request = $.ajax({
+            url: "/pastey/index.php/listings",
+            type: "get"
+        });
+
+        request.done(function(msg) {
+             console.log("Done");
+             if (msg.hasOwnProperty('error')) {
+                console.log(msg.error);                    
+                $("#error").html("Error: " + msg.error);
+             } else {
+                console.log("Success: listings");
+                
+                console.log(eval(msg));
+
+                // Set the msg object on the ractive.data object
+                ractive.set("listings", eval(msg))
+             }
+
+        });
+
+        request.fail(function(jqXHR, textStatus) {
+             console.log("Fail ");
+             console.log(JSON.stringify(jqXHR));
+             console.log(textStatus);
+        });
+
+    </script>
+</body>
+
+</html>
+

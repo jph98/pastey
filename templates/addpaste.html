@@ -37,72 +37,58 @@
 
      <script id='tmpl' type='text/ractive'>
 
-                Greeting: {{greeting}}
-                Listings: 
-                <table>
-                {{#listings}}
-                    <tr>                
-                        <td>{{title}}</td>
-                        <td>{{id}}</td>
-                        <td>{{name}}</td>
-                        <!-- <td>{{sourcecode}}</td> -->
-                        <td>{{language}}</td>
-                        <td>{{pastebinkey}}</td>
-                    </tr>
-                {{/listings}}
-                </table>
-
                 <div id="content">
                         
                         <p>
                         Welcome to Pastey.  Pastey is a paste bin that allows you to upload source code and share it with other people.
-                        <br><br>
-                        To use Pastey:</p>
+                        </p>
                         <ol>
                         <li>Enter a title, choose the source code type (syntax) and enter your name.</li>
-                        <li>Click on Add, this will create your pastebin.</li>
                         <li>To share the pastebin with other people send them the link in the address bar.</li></ol>
 
-                        <p>You can also choose to make your pastebin private when creating it.
-                        </p>
-                    
-                        <form method="post" enctype="multipart/form-data" action="listings/add">
+                        <form id="pasteForm" method="post" enctype="multipart/form-data" action="/pastey/index.php/addpaste">
 
                                 <table cellpadding="0" cellspacing="0">
                                 <tr><td class="label">Title <span class="mandatory">*</span></td>
                                 <td class="fieldcontainer">                                        
                                         <input type="text" name="title"/>
-                                        <div class="errormessage">
-                                                //Please enter a title for your pastebin
+                                        <div class="errormessage" style="display: none">
+                                                Please enter a title for your pastebin
                                         </div>
                                 </td></tr>
-                                <tr><td class="label">Language <span class="mandatory">*</span></td>
-                                <td class="fieldcontainer" style="white-space:nowrap; padding-bottom:10px;">
-
-                                        <select name="language">
-                                        // $languageslist, $this->data['Listing']['language']
-                                        </select>
-
-                                        <div class="errormessage">
-                                                // Please select the source code language
-                                        </div></td>
-                                </tr>
 
                                 <tr>
                                 <td class="label">Your Name <span class="mandatory">*</span></td>
                                 <td class="fieldcontainer">
                                         <input type="text" name="name"/>
-                                        <div class="errormessage">
-                                                //Please enter your name
+                                        <div class="errormessage"  style="display: none">
+                                                Please enter your name
                                         </div>
                                         </td>
                                 </tr>
 
-                                <td class="label">Source Code <span class="mandatory">*</span></td>
+                                <tr><td class="label">Language <span class="mandatory">*</span></td>
+                                <td class="fieldcontainer" style="white-space:nowrap; padding-bottom:10px;">
+
+                                        <select name="language">
+
+                                            {{#languages}}
+                                                <option value="{{name}}">{{name}}</option>
+                                            {{/languages}}
+
+                                            $this->data['Listing']['language']
+                                        </select>
+
+                                        <div class="errormessage"  style="display: none">
+                                                Please select the code language
+                                        </div></td>
+                                </tr>
+
+                                <td class="label" style="vertical-align: top; padding-top: 7px">Source Code <span class="mandatory">*</span></td>
                                 <td class="fieldcontainer">
-                                        <input type="textarea" name="sourcecode"/>
-                                        <div class="errormessage">
-                                                // Enter the source code
+                                        <textarea name="sourcecode" rows="20" cols="100"></textarea>
+                                        <div class="errormessage" style="display: none">
+                                                Please the code to put in the paste bin
                                         </div>
                                 </td>
                                 </tr>
@@ -110,7 +96,7 @@
                         </table>
 
                         <p>
-                            <input type="submit" name="add" class="submitButtons"/>
+                            <input type="submit" name="add" class="submitButtons" on-click="addpaste" value="Add New Paste"/>
                         </p>
                         </form>
                 </div>
@@ -128,12 +114,11 @@
 
         var ractive = new Ractive({
             el: 'container',
-            template: '#tmpl',
-            data: {greeting: 'Hello'}
+            template: '#tmpl'
         });
 
         request = $.ajax({
-            url: "/pastey/index.php/listings",
+            url: "/pastey/index.php/languages",
             type: "get"
         });
 
@@ -143,12 +128,12 @@
                 console.log(msg.error);                    
                 $("#error").html("Error: " + msg.error);
              } else {
-                console.log("Success: listings");
+                console.log("Success: languages");
                 
                 console.log(eval(msg));
 
                 // Set the msg object on the ractive.data object
-                ractive.set("listings", eval(msg))
+                ractive.set("languages", eval(msg))
              }
 
         });
@@ -159,6 +144,13 @@
              console.log(textStatus);
         });
 
+        ractive.on( 'addpaste', function ( event ) {
+
+            // TODO: Submit the form
+            alert( 'Adding paste!' );
+            $("#pasteForm").submit();
+        });
+        
     </script>
 </body>
 
