@@ -1,35 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>private pastebins</title>
-<META NAME="keywords" CONTENT="pastebin, pbin, paste bin">
-<META NAME="description" CONTENT="pastey paste bin">
+    <head>
+    <title>private pastebins</title>
+    <META NAME="keywords" CONTENT="pastebin, paste bin">
+    <META NAME="description" CONTENT="pastey paste bin">
 
-<script src='Ractive.js'></script>
-<script src='jquery-2.1.0.js'></script>
+    <script src='Ractive.js'></script>
+    <script src='/pastey/underscore.js'></script>
+    <script src='jquery-2.1.0.js'></script>
 
-<link href="pastey.css" rel="stylesheet" type="text/css" />
-
-<script>
-        <!-- TODO: Replace this with standard Ractive events -->
-        $(document).ready(function() {
-            
-            console.log("ready");
-        });
-
-</script>
-
-
+    <link href="/pastey/pastey.css" rel="stylesheet" type="text/css" />
 </head>
 
-<!-- header -->
-<div id="wrapper">
-<div id="header">
-<a href="/"><img src="pastebin_logo.gif" border="0" alt="Pastey" title="Pastey"></a>
-</div>
-<!-- header -->
-
 <body>
+
+    <div id="wrapper">
+    <div id="header">
+    <a href="/pastey"><img src="pastebin_logo.gif" border="0" alt="Pastey" title="Pastey"></a>
+    </div>
 
     <div id="error"></div>
 
@@ -37,21 +25,23 @@
 
      <script id='tmpl' type='text/ractive'>
 
+     {{#paste}}
                 <div id="content">
                         
-                        <p>
-                        Welcome to Pastey.  Pastey is a paste bin that allows you to upload source code and share it with other people.
-                        </p>
-                        <ol>
-                        <li>Enter a title, choose the source code type (syntax) and enter your name.</li>
-                        <li>To share the pastebin with other people send them the link in the address bar.</li></ol>
+                            <p>
+                            Welcome to Pastey.  Pastey is a paste bin that allows you to upload source code and share it with other people.
+                            </p>
+                            <ol>
+                            <li>Enter a title, choose the source code type (syntax) and enter your name.</li>
+                            <li>To share the pastebin with other people send them the link in the address bar.</li></ol>
+                        
 
-                        <form id="pasteForm" method="post" enctype="multipart/form-data" action="/pastey/index.php/addpaste">
+                        <form id="pasteForm" method="post" enctype="multipart/form-data" action="/pastey/pastes">
 
                                 <table cellpadding="0" cellspacing="0">
                                 <tr><td class="label">Title <span class="mandatory">*</span></td>
                                 <td class="fieldcontainer">                                        
-                                        <input type="text" name="title"/>
+                                            <input id="title" type="text" name="title" value="Sample code review"/>
                                         <div class="errormessage" style="display: none">
                                                 Please enter a title for your pastebin
                                         </div>
@@ -60,7 +50,8 @@
                                 <tr>
                                 <td class="label">Your Name <span class="mandatory">*</span></td>
                                 <td class="fieldcontainer">
-                                        <input type="text" name="name"/>
+                                            <input id="name" type="text" name="name" value="Jon"/>
+
                                         <div class="errormessage"  style="display: none">
                                                 Please enter your name
                                         </div>
@@ -70,25 +61,28 @@
                                 <tr><td class="label">Language <span class="mandatory">*</span></td>
                                 <td class="fieldcontainer" style="white-space:nowrap; padding-bottom:10px;">
 
-                                        <select name="language">
-
-                                            {{#languages}}
-                                                <option value="{{name}}">{{name}}</option>
-                                            {{/languages}}
-
-                                            $this->data['Listing']['language']
-                                        </select>
+                                            <select id="language" name="language" on-change="languageChange">
+                                                {{#languages}}
+                                                    <option value="{{name}}">{{name}}</option>
+                                                {{/languages}}                                          
+                                            </select>
 
                                         <div class="errormessage"  style="display: none">
                                                 Please select the code language
                                         </div></td>
                                 </tr>
 
-                                <td class="label" style="vertical-align: top; padding-top: 7px">Source Code <span class="mandatory">*</span></td>
+                                <td class="label" style="vertical-align: top; padding-top: 7px">
+                                Source Code 
+                                <span class="mandatory">*</span>
+
+                                </td>
                                 <td class="fieldcontainer">
-                                        <textarea name="sourcecode" rows="20" cols="100"></textarea>
+
+                                        <div id="editor"></div>
+                                            
                                         <div class="errormessage" style="display: none">
-                                                Please the code to put in the paste bin
+                                                Please enter the code to put in the paste bin
                                         </div>
                                 </td>
                                 </tr>
@@ -96,7 +90,7 @@
                         </table>
 
                         <p>
-                            <input type="submit" name="add" class="submitButtons" on-click="addpaste" value="Add New Paste"/>
+                            <input type="submit" name="add" id="submitPasteButton" on-click="addPaste" value="Add New Paste"/>
                         </p>
                         </form>
                 </div>
@@ -106,52 +100,95 @@
     	<!-- footer -->
     	<div style="clearboth"></div>
 
+    {{/paste}}
+
     </script>
+
+    
     </div>
 
-    <!-- Move this into a separate script -->
-     <script>
+    <script src="/pastey/acebuilds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/pastey/pasteyeditor.js"></script>
+
+    <script>
 
         var ractive = new Ractive({
             el: 'container',
-            template: '#tmpl'
+            template: '#tmpl',
+            data: {
+                paste: {}
+            },
+            debug: true
+        });    
+
+        function initialise() {
+
+            request = $.ajax({
+                url: "/pastey/languages",
+                type: "get"
+            });
+
+            request.done(function(msg) {
+                 console.log("Done");
+                 if (msg.hasOwnProperty('error')) {
+                    console.log(msg.error);                    
+                    $("#error").html("Error: " + msg.error);
+                 } else {
+                    ractive.set("languages", eval(msg));
+
+                    var editor = ace.edit("editor");
+                    setupEditor(editor);
+                    addThemes();
+                    changeTheme(editor, ractive.get("paste.theme"));
+                 }
+
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                 console.log("Fail ");
+                 console.log(JSON.stringify(jqXHR));
+                 console.log(textStatus);
+            });
+        }
+
+        initialise();
+
+        ractive.on('languageChange', function (event) {
+
+            var editor = ace.edit("editor");
+            changeLanguage(editor, event.node.value);
         });
 
-        request = $.ajax({
-            url: "/pastey/index.php/languages",
-            type: "get"
+        ractive.on('addPaste', function ( event ) {            
+
+            var editor = ace.edit("editor");
+
+            $.ajax({
+                url: '/pastey/pastes',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "sourcecode": editor.getValue(),
+                    "language": $("#language").val(),
+                    "theme": $("#theme").val(),
+                    "title": $("#title").val(),
+                    "name": $("#name").val()
+                },
+
+                success: function(data, status, jqXHR) {
+                    console.log("SUCCESS: paste");                    
+                    window.location.href = data;
+                },
+
+                fail: function(data) {
+                    alert("Error saving paste");  
+                }
+            });
         });
 
-        request.done(function(msg) {
-             console.log("Done");
-             if (msg.hasOwnProperty('error')) {
-                console.log(msg.error);                    
-                $("#error").html("Error: " + msg.error);
-             } else {
-                console.log("Success: languages");
-                
-                console.log(eval(msg));
-
-                // Set the msg object on the ractive.data object
-                ractive.set("languages", eval(msg))
-             }
-
-        });
-
-        request.fail(function(jqXHR, textStatus) {
-             console.log("Fail ");
-             console.log(JSON.stringify(jqXHR));
-             console.log(textStatus);
-        });
-
-        ractive.on( 'addpaste', function ( event ) {
-
-            // TODO: Submit the form
-            alert( 'Adding paste!' );
-            $("#pasteForm").submit();
-        });
         
     </script>
+
 </body>
 
 </html>

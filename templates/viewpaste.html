@@ -1,0 +1,142 @@
+<html>
+    <head>
+    <title>private pastebins</title>
+    <META NAME="keywords" CONTENT="pastebin, paste bin">
+    <META NAME="description" CONTENT="pastey paste bin">
+
+    <script src='/pastey/Ractive.js'></script>
+    <script src='/pastey/underscore.js'></script>
+    <script src='/pastey/jquery-2.1.0.js'></script>
+
+    <link href="/pastey/pastey.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+    <form id="pasteForm" method="put" enctype="multipart/form-data" action="/pastey/pastes">
+
+    <div id="wrapper">
+    <div id="header">
+        <a href="/pastey"><img src="/pastey/pastebin_logo.gif" border="0" alt="Pastey" title="Pastey"></a>
+    </div>
+
+    <div id="error"></div>
+ 
+    <div id="container">       
+        
+        <script id='tmpl' type='text/ractive'>
+
+        <p>Theme: 
+            <select id="theme" on-change="changeTheme">            
+            </select>
+            <input id="updatePasteButton" type="button" on-click="updatePaste" value="Update Paste"/>
+        </p>
+
+        {{#paste}}            
+            <div id="content">
+                <p><b>{{language}}</b> - submitted by
+                {{name}} - {{title}}</p>                
+
+                <div id="editor"></div>
+            </div>
+        {{/paste}}
+        </script>
+
+
+    </div>
+
+    <!-- footer -->
+    <div style="clearboth"></div>
+    </div>
+
+    <script src="/pastey/acebuilds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/pastey/pasteyeditor.js"></script>
+
+    <script>
+
+        function loadPaste() {
+
+            request = $.ajax({
+                url: "/pastey/pastedetail/" + pastebinkey,
+                type: "get"
+            });
+
+            request.done(function(msg) {
+                 console.log("Done");
+                 if (msg.hasOwnProperty('error')) {
+                    console.log(msg.error);                    
+                    $("#error").html("Error: " + msg.error);
+                 } else {
+
+                    ractive.set("paste", eval(msg));                
+                    
+                    var editor = ace.edit("editor");
+                    setupEditor(editor);
+                    addThemes();
+                    var theme = ractive.get("paste.theme");
+                    changeTheme(editor, theme);
+                 }             
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                 console.log("Failed to load paste");
+                 console.log(JSON.stringify(jqXHR));
+                 console.log(textStatus);
+            });
+        }
+
+        function updatePaste() {
+
+            var editor = ace.edit("editor");
+            var theme = $("#theme").val();
+            var sourcecode = editor.getValue();
+            
+            $.ajax({
+                url: '/pastey/pastes/' + pastebinkey,
+                type: 'put',
+                dataType: 'json',
+                data: {
+                    "sourcecode": sourcecode,
+                    "theme": theme
+                },
+
+                success: function(data, status, jqXHR) {
+                    console.log("SUCCESS: update paste");                    
+                },
+
+                fail: function(data) {
+                    alert("Error updating paste");  
+                }
+            });
+        }
+
+        var ractive = new Ractive({
+
+            el: 'container',
+            template: '#tmpl',
+            data: {
+                paste: {}                
+            },
+            debug: true
+        });  
+
+        ractive.on("changeTheme", function (event) { 
+            var editor = ace.edit("editor");              
+            changeTheme(editor, event.node.value);
+        });
+
+        ractive.on("updatePaste", function (event) {                        
+            updatePaste();
+        });
+
+        var pastebinkey = "<?php echo $pastebinkey; ?>";
+        loadPaste(pastebinkey);
+
+    </script>
+
+    </form>
+</body>
+
+</html>
+

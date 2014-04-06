@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gabordemooij/redbean.git",
-                "reference": "b146123c108425f7dc06dd2eb8fb218f87f9a075"
+                "reference": "0fb92d14ba9498e774357afbd7f4c77216e07afd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gabordemooij/redbean/zipball/b146123c108425f7dc06dd2eb8fb218f87f9a075",
-                "reference": "b146123c108425f7dc06dd2eb8fb218f87f9a075",
+                "url": "https://api.github.com/repos/gabordemooij/redbean/zipball/0fb92d14ba9498e774357afbd7f4c77216e07afd",
+                "reference": "0fb92d14ba9498e774357afbd7f4c77216e07afd",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "Object Relational Mapping",
                 "orm"
             ],
-            "time": "2014-03-02 12:03:05"
+            "time": "2014-03-24 23:39:52"
         },
         {
             "name": "slim/extras",

@@ -1,16 +1,17 @@
+/**
+ * Pastey css
+ */ 
 body {
-    	text-align: center;
+    text-align: center;
 	min-width: 600px;
 	background: url(pastebin_nav_bg.jpg) top left repeat-x;
 	background-color:#fff;
 }
 
 p, li, .label {
-
 	font-family: Tahoma, "Trebuchet MS", helvetica, arial, sans serif;
 	font-size:12px;
 	color:#000;
-	
 }
 
 #error {
@@ -49,12 +50,14 @@ a:hover {
 
 a:focus, a:active {
    outline: none;
-
 }
       
+#editor { 
+	position: relative;
+    height: 300px;
+}
 
 #wrapper {
-
 	margin:0 auto;
 	width:990px;
 	padding:10px;
@@ -62,40 +65,38 @@ a:focus, a:active {
 	min-height:550px;
 }
 
+#submitPasteButton {
+	margin-left: 78px;
+}
 
 #header {
-
 	height:83px;
 	width: 100%;
-	
 }
 
 #header img {
-
-
 	float:left;
-	
-	}
+}
+
+#updatePasteButton {
+	margin-left: 50px;
+}
+
 
 .fieldcontainer {
-	
 	padding-top:5px;
 	padding-bottom:5px;
 }
 
-
 #footer {
-
-text-align: center;
-min-width: 600px;
-border-top:2px solid #e84816;
-margin-bottom:-10px;
-width:100%
-	
+	text-align: center;
+	min-width: 600px;
+	border-top:2px solid #e84816;
+	margin-bottom:-10px;
+	width:100%	
 }
 
 .footerwrap {
-
 	margin:0 auto;
 	width:990px;
 	padding:10px;
