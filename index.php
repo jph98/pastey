@@ -39,7 +39,7 @@ $app = new \Slim\Slim(array(
     })->name('admin');
 
     // Get all pastes
-    $app->get('/pastes', function() use ($app) {   
+    $app->get('/pastesall', function() use ($app) {   
 
         try {
             $pastes = RB::find('pastes'); 
@@ -53,15 +53,17 @@ $app = new \Slim\Slim(array(
     })->name('getallpastes');
 
     // Paste listing page
-    $app->get('/pastes/:pastebinkey', function($pastebinkey) use ($app) {
+    $app->get('/pastesyoo/:pastebinkey', function($pastebinkey) use ($app) {
 
+        error_log("Rendering paste for " + $pastebinkey);
         $app->render('viewpaste.html', array("pastebinkey" => $pastebinkey) );
 
     })->name('getpaste');
 
-    // Paste JSON 
+    // Pastedetail 
     $app->get('/pastedetail/:pastebinkey', function($pastebinkey) use ($app) {
 
+        error_log("Rendering paste detail for " + $pastebinkey);
         $paste = RB::findOne('pastes', ' pastebinkey = :pastebinkey',  array('pastebinkey' => $pastebinkey));
         
         $app->response->headers->set('Content-Type', 'application/json');
@@ -91,30 +93,23 @@ $app = new \Slim\Slim(array(
 
     })->name('languagesdropdown');
 
-    // Add New Paste
+    // POST New Paste
     $app->post('/pastes', function() use ($app) {   
 
         try {
-            $language = $app->request->post('language');
-            $code = $app->request->post('code');
-
-            $paste = RB::dispense('pastes');        
+        
+            $paste = RB::dispense('pastes');
             $paste->name = $app->request->post('name');
             $paste->title = $app->request->post('title');
-
             $paste->theme = DEFAULT_THEME;
-
             $paste->language = $app->request->post('language');
-
-            error_log("language " . $paste->language);
-
             $paste->sourcecode = $app->request->post('sourcecode');
             $paste->pastebinkey = uniqid("pastebin-") . round(microtime(true) * 1000);
-            
+
             $paste->id = RB::store($paste);
-            
+
             $app->response->headers->set('Content-Type', 'application/json');
-            echo json_encode("/pastey/pastes/" . $paste->pastebinkey);
+            echo json_encode("/pastey/pastesyoo/" . $paste->pastebinkey);
 
         } catch(\Exception $e) {
             $app->response->headers->set('Content-Type', 'application/json');
@@ -134,8 +129,6 @@ $app = new \Slim\Slim(array(
             $paste->theme = $app->request->put("theme");
             $paste->pastebinkey = $pastebinkey;
             
-            error_log("Theme is " . $app->request->put("theme"));
-
             RB::store($paste);
 
             $app->response->headers->set('Content-Type', 'application/json');
