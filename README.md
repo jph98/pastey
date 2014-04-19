@@ -1,5 +1,4 @@
-pastey
-======
+![Pastey Screenshot](https://raw.githubusercontent.com/jph98/pastey/master/pastey.png)
 
 Pastebin built with:
 * Slim - PHP micro REST framework
@@ -7,8 +6,6 @@ Pastebin built with:
 * Composer - PHP dependency management
 * Ractive - Javascript data binding
 * Bower - Javascript client side dependency management
- 
-![Pastey Screenshot](https://raw.githubusercontent.com/jph98/pastey/master/pastey.png)
 
 
 Install
