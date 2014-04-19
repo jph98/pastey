@@ -4,7 +4,6 @@
 body {
     text-align: center;
 	min-width: 600px;
-	background: url(pastebin_nav_bg.jpg) top left repeat-x;
 	background-color:#fff;
 }
 
@@ -66,7 +65,7 @@ a:focus, a:active {
 }
 
 #submitPasteButton {
-	margin-right: 135px;
+	margin-right: 45px;
 	float: right;
 }
 

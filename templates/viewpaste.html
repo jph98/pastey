@@ -16,7 +16,7 @@
 
     <div id="wrapper">
     <div id="header">
-        <a href="/pastey"><img src="/pastey/pastebin_logo.gif" border="0" alt="Pastey" title="Pastey"></a>
+        <a href="/pastey"><img src="/pastey/pastey_logo.png" border="0" alt="Pastey" title="Pastey"></a>
     </div>
 
     <div id="error"></div>
@@ -25,15 +25,17 @@
         
         <script id='tmpl' type='text/ractive'>
 
-        <p id="updated">
-        </p>
+        <p id="updated"></p>
         <p>Theme: 
-            <select id="theme" on-change="changeTheme">            
+            <select id="theme" on-change="updateTheme">            
             </select>
             <input id="updatePasteButton" type="button" on-click="updatePaste" value="Update Paste"/>
         </p>
 
-        {{#paste}}            
+        {{#paste}}      
+            <div id="langicon">
+                <img src="/pastey/langicons/{{language}}.png" style="float: left; margin-right: 5px"/>
+            </div>      
             <div id="content">
                 <p><b>{{language}}</b> - submitted by
                 {{name}} - {{title}}</p>                
@@ -43,7 +45,6 @@
         {{/paste}}
         </script>
 
-
     </div>
 
     <!-- footer -->
@@ -51,81 +52,14 @@
     </div>
 
     <script src="/pastey/bower_components/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="/pastey/pasteyeditor.js"></script>
+    <script type="text/javascript" src="/pastey/pastey-model.js"></script>
+    <script type="text/javascript" src="/pastey/pastey-events.js"></script>
+    <script type="text/javascript" src="/pastey/pastey-editor.js"></script>
+    <script type="text/javascript" src="/pastey/pastey-controller.js"></script>
 
-    <script>
-
-        function loadPaste() {
-
-            request = $.ajax({
-                url: "/pastey/pastedetail/" + pastebinkey,
-                type: "get"
-            });
-
-            request.done(function(msg) {
-                 console.log("Done");
-                 if (msg.hasOwnProperty('error')) {
-                    console.log(msg.error);                    
-                    $("#error").html("Error: " + msg.error);
-                 } else {
-
-                    ractive.set("paste", eval(msg));                
-                    
-                    var editor = ace.edit("editor");
-                    setupEditor(editor);
-                    addThemes();
-                    var theme = ractive.get("paste.theme");
-                    changeTheme(editor, theme);
-                 }             
-            });
-
-            request.fail(function(jqXHR, textStatus) {
-                 console.log("Failed to load paste");
-                 console.log(JSON.stringify(jqXHR));
-                 console.log(textStatus);
-            });
-        }
-
-        function updatePaste() {
-
-            var editor = ace.edit("editor");
-            var theme = $("#theme").val();
-            var sourcecode = editor.getValue();
-
-            $.ajax({
-                url: '/pastey/pastes/' + pastebinkey,
-                type: 'put',
-                dataType: 'json',
-                data: {
-                    "sourcecode": sourcecode,
-                    "theme": theme
-                }
-            });
-        }
-
-        var ractive = new Ractive({
-
-            el: 'container',
-            template: '#tmpl',
-            data: {
-                paste: {}                
-            },
-            debug: true
-        });  
-
-        ractive.on("changeTheme", function (event) { 
-            var editor = ace.edit("editor");              
-            changeTheme(editor, event.node.value);
-        });
-
-        ractive.on("updatePaste", function (event) {                        
-            updatePaste();
-            $("#updated").html("<b>Updated paste sucessfully</b>");
-        });
-
+    <script stype="text/javascript">
         var pastebinkey = "<?php echo $pastebinkey; ?>";
         loadPaste(pastebinkey);
-
     </script>
 
 </body>

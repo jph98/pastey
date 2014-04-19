@@ -53,7 +53,7 @@ $app = new \Slim\Slim(array(
     })->name('getallpastes');
 
     // Paste listing page
-    $app->get('/pastesyoo/:pastebinkey', function($pastebinkey) use ($app) {
+    $app->get('/pastes/:pastebinkey', function($pastebinkey) use ($app) {
 
         error_log("Rendering paste for " + $pastebinkey);
         $app->render('viewpaste.html', array("pastebinkey" => $pastebinkey) );
@@ -104,12 +104,13 @@ $app = new \Slim\Slim(array(
             $paste->theme = DEFAULT_THEME;
             $paste->language = $app->request->post('language');
             $paste->sourcecode = $app->request->post('sourcecode');
+            $paste->theme = $app->request->post('theme');
             $paste->pastebinkey = uniqid("pastebin-") . round(microtime(true) * 1000);
 
             $paste->id = RB::store($paste);
 
             $app->response->headers->set('Content-Type', 'application/json');
-            echo json_encode("/pastey/pastesyoo/" . $paste->pastebinkey);
+            echo json_encode("/pastey/pastes/" . $paste->pastebinkey);
 
         } catch(\Exception $e) {
             $app->response->headers->set('Content-Type', 'application/json');

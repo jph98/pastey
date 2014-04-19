@@ -33,7 +33,11 @@ There's a sample nginx site included that you can use.
 Todo
 ----
 
-* Setup Bower, AMD and require JS
+* SetupAMD and require JS
+* Split out model
 * Allow user to upload a patch/diff file
 * Add a diff parser upload and option
 * Add a CTRL+Enter submit shortcut
+* Add icons for commonly used languages
+
+Look at splitting up AJAX calls and the actual model - remove the JQuery selectors and bind to model instead
