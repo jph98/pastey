@@ -8,7 +8,7 @@ Pastebin built with:
 * Ractive - Javascript data binding
 * Bower - Javascript client side dependency management
  
-![Pastey Screenshot](https://raw.githubusercontent.com/jph98/logan/master/pastey.png)
+![Pastey Screenshot](https://raw.githubusercontent.com/jph98/pastey/master/pastey.png)
 
 
 Install
