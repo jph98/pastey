@@ -3,7 +3,13 @@ pastey
 
 Pastebin built with:
 * Slim - PHP micro REST framework
+* Redbean - PHP ORM framework
+* Composer - PHP dependency management
 * Ractive - Javascript data binding
+* Bower - Javascript client side dependency management
+ 
+![Pastey Screenshot](https://raw.githubusercontent.com/jph98/logan/master/pastey.png)
+
 
 Install
 -------
